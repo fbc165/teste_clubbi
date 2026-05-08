@@ -9,13 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.carts.models import CartStatus, CartItem
 from api.carts.repositories import get_cart_by_id
 from api.checkouts.models import Checkout, CheckoutStatus
-from api.checkouts.repositories import create_checkout, get_checkout, get_checkout_by_cart
+from api.checkouts.repositories import (
+    create_checkout,
+    get_checkout,
+    get_checkout_by_cart,
+)
 from api.offers.models import Offer
 
 
-async def create_checkout_from_cart(
-    db: AsyncSession, cart_id: UUID
-) -> Checkout:
+async def create_checkout_from_cart(db: AsyncSession, cart_id: UUID) -> Checkout:
     cart = await get_cart_by_id(db, cart_id, with_items=False)
     if not cart:
         raise HTTPException(
@@ -36,7 +38,7 @@ async def create_checkout_from_cart(
         .join(Offer, CartItem.offer_id == Offer.id)
         .where(CartItem.cart_id == cart_id)
     )
-    rows = result.all()
+    rows: list[tuple[CartItem, Offer]] = result.all()
     if not rows:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Cart is empty"
