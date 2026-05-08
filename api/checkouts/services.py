@@ -18,7 +18,7 @@ from api.offers.models import Offer
 
 
 async def create_checkout_from_cart(db: AsyncSession, cart_id: UUID) -> Checkout:
-    cart = await get_cart_by_id(db, cart_id, with_items=False)
+    cart = await get_cart_by_id(db=db, cart_id=cart_id, with_items=False)
     if not cart:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cart not found"
@@ -29,7 +29,7 @@ async def create_checkout_from_cart(db: AsyncSession, cart_id: UUID) -> Checkout
             detail="Cart is not open",
         )
 
-    existing = await get_checkout_by_cart(db, cart_id)
+    existing = await get_checkout_by_cart(db=db, cart_id=cart_id)
     if existing:
         return existing
 
@@ -50,11 +50,13 @@ async def create_checkout_from_cart(db: AsyncSession, cart_id: UUID) -> Checkout
 
     total = total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-    return await create_checkout(db, cart_id, cart.customer_id, total)
+    return await create_checkout(
+        db=db, cart_id=cart_id, customer_id=cart.customer_id, total_amount=total
+    )
 
 
 async def pay_checkout(db: AsyncSession, checkout_id: UUID) -> Checkout:
-    checkout = await get_checkout(db, checkout_id)
+    checkout = await get_checkout(db=db, checkout_id=checkout_id)
     if not checkout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Checkout not found"
@@ -65,7 +67,7 @@ async def pay_checkout(db: AsyncSession, checkout_id: UUID) -> Checkout:
             detail="Checkout already paid",
         )
 
-    cart = await get_cart_by_id(db, checkout.cart_id, with_items=False)
+    cart = await get_cart_by_id(db=db, cart_id=checkout.cart_id, with_items=False)
     if not cart:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cart not found"
