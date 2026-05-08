@@ -7,6 +7,11 @@ from alembic import context
 
 from api.settings import settings
 from api.storage.postgresql.base import Base
+from api.carts.models import Cart, CartItem
+from api.checkouts.models import Checkout
+from api.customers.models import Customer
+from api.offers.models import Offer
+from api.products.models import Product
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
