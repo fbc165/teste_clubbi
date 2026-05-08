@@ -1,8 +1,8 @@
 FROM python:3.14-slim-trixie
 
-ADD . /api
+ADD . /clubbi_api
 
-WORKDIR /api
+WORKDIR /clubbi_api
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \

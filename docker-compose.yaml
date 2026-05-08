@@ -19,11 +19,11 @@ services:
     volumes:
       - db:/var/lib/postgresql
 
-  api:
+  clubbi_api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: api
+    container_name: clubbi_api
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -37,7 +37,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     volumes:
-      - .:/api
+      - .:/clubbi_api
 
 volumes:
   db:
