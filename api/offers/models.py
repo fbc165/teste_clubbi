@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 from uuid import UUID, uuid4
 
 from sqlalchemy import Date, ForeignKey, Index, Numeric
@@ -26,7 +27,7 @@ class Offer(TimestampMixin, Base):
     customer_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True), ForeignKey("customers.id"), nullable=False
     )
-    unit_price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    unit_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     validity: Mapped[date] = mapped_column(Date, nullable=False)
 
     product = relationship("Product", back_populates="offers")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -56,7 +57,7 @@ class Checkout(TimestampMixin, Base):
         nullable=False,
         default=PaymentMethod.PIX,
     )
-    total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    total_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     cart = relationship("Cart", back_populates="checkout")
     customer = relationship("Customer")
