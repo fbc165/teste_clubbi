@@ -22,7 +22,8 @@ from api.storage.postgresql.mixins import TimestampMixin
 
 class CartStatus(str, Enum):
     OPEN = "OPEN"
-    CHECKED_OUT = "CHECKED_OUT"
+    CHECKOUT = "CHECKOUT"
+    PAID = "PAID"
 
 
 class Cart(TimestampMixin, Base):

@@ -50,9 +50,12 @@ async def create_checkout_from_cart(db: AsyncSession, cart_id: UUID) -> Checkout
 
     total = total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-    return await create_checkout(
+    checkout = await create_checkout(
         db=db, cart_id=cart_id, customer_id=cart.customer_id, total_amount=total
     )
+    cart.status = CartStatus.CHECKOUT
+    await db.flush()
+    return checkout
 
 
 async def pay_checkout(db: AsyncSession, checkout_id: UUID) -> Checkout:
@@ -76,7 +79,7 @@ async def pay_checkout(db: AsyncSession, checkout_id: UUID) -> Checkout:
     now = datetime.now(timezone.utc)
     checkout.status = CheckoutStatus.PAID
     checkout.paid_at = now
-    cart.status = CartStatus.CHECKED_OUT
+    cart.status = CartStatus.PAID
     cart.checked_out_at = now
     await db.flush()
     await db.refresh(checkout)
